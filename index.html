@@ -1,0 +1,3264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Global Football Intelligence</title>
+
+  <style>
+    /* Theme Variables */
+    [data-theme="dark"]{
+      --bg:#0b1220;
+      --bg-gradient: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%);
+      --card:rgba(18, 26, 43, 0.6);
+      --text:#e9eefc;
+      --muted:#a8b3cf;
+      --border:rgba(255,255,255,.10);
+      --chip:rgba(255,255,255,.06);
+      --chip2:rgba(255,255,255,.10);
+      --good: rgba(70, 255, 140, .16);
+      --bad: rgba(255, 90, 90, .16);
+      --warn: rgba(255, 210, 90, .16);
+      --electric: #00d4ff;
+      --neon-green: #46ff8c;
+      --primary: #00d4ff;
+      --secondary: #7c3aed;
+    }
+
+    [data-theme="light"]{
+      --bg:#f8f9fd;
+      --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #ffffff 100%);
+      --card:rgba(255, 255, 255, 0.9);
+      --text:#1a202c;
+      --muted:#64748b;
+      --border:rgba(0,0,0,.08);
+      --chip:rgba(0,0,0,.04);
+      --chip2:rgba(0,0,0,.08);
+      --good: rgba(16, 185, 129, .16);
+      --bad: rgba(239, 68, 68, .16);
+      --warn: rgba(245, 158, 11, .16);
+      --electric: #0ea5e9;
+      --neon-green: #10b981;
+      --primary: #0ea5e9;
+      --secondary: #8b5cf6;
+    }
+
+    [data-theme="mint"]{
+      --bg:#0a1a1a;
+      --bg-gradient: linear-gradient(135deg, #0c1f1f 0%, #133333 50%, #0c1f1f 100%);
+      --card:rgba(16, 36, 36, 0.6);
+      --text:#e0f2f1;
+      --muted:#80cbc4;
+      --border:rgba(128,203,196,.15);
+      --chip:rgba(128,203,196,.06);
+      --chip2:rgba(128,203,196,.12);
+      --good: rgba(77, 255, 196, .20);
+      --bad: rgba(255, 90, 90, .16);
+      --warn: rgba(255, 213, 79, .16);
+      --electric: #4dffC4;
+      --neon-green: #26de81;
+      --primary: #4dffC4;
+      --secondary: #20e3b2;
+    }
+
+    [data-theme="sunset"]{
+      --bg:#1a0f1f;
+      --bg-gradient: linear-gradient(135deg, #1f0f25 0%, #3a1f47 50%, #1f0f25 100%);
+      --card:rgba(42, 24, 54, 0.6);
+      --text:#fce7f3;
+      --muted:#d8b4fe;
+      --border:rgba(216,180,254,.15);
+      --chip:rgba(216,180,254,.06);
+      --chip2:rgba(216,180,254,.12);
+      --good: rgba(251, 113, 133, .20);
+      --bad: rgba(239, 68, 68, .16);
+      --warn: rgba(251, 191, 36, .16);
+      --electric: #fb7185;
+      --neon-green: #fbbf24;
+      --primary: #fb7185;
+      --secondary: #c026d3;
+    }
+
+    [data-theme="ocean"]{
+      --bg:#0a1929;
+      --bg-gradient: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
+      --card:rgba(27, 38, 59, 0.6);
+      --text:#e0f2fe;
+      --muted:#7dd3fc;
+      --border:rgba(125,211,252,.15);
+      --chip:rgba(125,211,252,.06);
+      --chip2:rgba(125,211,252,.12);
+      --good: rgba(34, 211, 238, .20);
+      --bad: rgba(255, 90, 90, .16);
+      --warn: rgba(253, 224, 71, .16);
+      --electric: #22d3ee;
+      --neon-green: #3b82f6;
+      --primary: #22d3ee;
+      --secondary: #3b82f6;
+    }
+    
+    :root{
+      --bg:#0b1220;
+      --bg-gradient: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%);
+      --card:rgba(18, 26, 43, 0.6);
+      --text:#e9eefc;
+      --muted:#a8b3cf;
+      --border:rgba(255,255,255,.10);
+      --chip:rgba(255,255,255,.06);
+      --chip2:rgba(255,255,255,.10);
+      --good: rgba(70, 255, 140, .16);
+      --bad: rgba(255, 90, 90, .16);
+      --warn: rgba(255, 210, 90, .16);
+      --electric: #00d4ff;
+      --neon-green: #46ff8c;
+      --primary: #00d4ff;
+      --secondary: #7c3aed;
+    }
+    
+    body{ 
+      margin:0; 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color:var(--text);
+      transition: background 0.5s ease, color 0.3s ease;
+    }
+    header{ padding:16px 18px; border-bottom:1px solid var(--border); font-weight:800; }
+
+    .wrap{ display:grid; grid-template-columns: 1fr 420px; gap:14px; padding:14px; }
+    @media (max-width: 980px){ .wrap{ grid-template-columns:1fr; } }
+
+    .card{ 
+      background: rgba(18, 26, 43, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card:hover{
+      background: rgba(18, 26, 43, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Tabs */
+    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .tab{
+      padding:8px 12px; border-radius:12px; background:var(--chip);
+      border:1px solid transparent; cursor:pointer; font-weight:800; font-size:13px;
+      user-select:none;
+    }
+    .tab:hover{ background:var(--chip2); border-color:var(--border); }
+    .tab.active{ background:rgba(255,255,255,.14); border-color:var(--border); }
+
+    h2{ margin:0 0 10px; font-size:16px; }
+    .muted{ color:var(--muted); font-size:13px; }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+
+    input{
+      width:100%; box-sizing:border-box; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border); background:rgba(255,255,255,.04); color:var(--text); outline:none;
+      transition: all 0.3s ease;
+    }
+    input:focus{
+      border-color: var(--electric);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    }
+    
+    button{
+      padding:10px 12px; border-radius:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:800;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    button:hover{ 
+      background:rgba(255,255,255,.12);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+    }
+    button:active{
+      transform: translateY(0);
+    }
+    button:disabled{ opacity:.55; cursor:not-allowed; transform: none; }
+
+    /* leagues */
+    #leagues{ margin-top:10px; }
+    .league-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 10px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid transparent; cursor:pointer; margin-bottom:8px; }
+    .league-row:hover{ background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.10); }
+    .league-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .flag{ width:30px; height:30px; border-radius:10px; display:grid; place-items:center; background:var(--chip); }
+    .league-meta{ min-width:0; }
+    .league-name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .league-country{ font-size:12px; color:var(--muted); }
+    .pill{ padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--muted); font-size:12px; }
+
+    /* fixtures */
+    .fixture-date{ margin:12px 0 8px; padding:8px 10px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid var(--border); font-weight:900; font-size:13px; }
+    .fixture{ display:flex; gap:10px; align-items:center; padding:10px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid transparent; margin-bottom:8px; cursor:pointer; }
+    .fixture:hover{ background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.10); }
+    .fixture-time{ width:64px; text-align:center; font-weight:900; color:var(--muted); font-size:12px; padding:6px 8px; border-radius:10px; background:var(--chip); flex:0 0 auto; }
+    .fixture-teams{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .team-badge{ width:18px; height:18px; object-fit:contain; border-radius:4px; background:rgba(255,255,255,.06); }
+    .vs{ color:var(--muted); font-weight:900; margin:0 4px; }
+
+    /* table */
+    table{ width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; }
+    th, td{ padding:8px 6px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left; }
+    th{ color:var(--muted); font-weight:900; }
+    td.num{ text-align:right; }
+    td.teamcell{ display:flex; align-items:center; gap:8px; }
+    .table-wrap{ max-height:360px; overflow:auto; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:8px; background:rgba(255,255,255,.03); }
+
+    /* analysis sections */
+    .section{ 
+      border:1px solid rgba(255,255,255,.10); 
+      background:rgba(255,255,255,.03); 
+      border-radius:14px; 
+      padding:10px; 
+      margin-top:10px;
+      transition: all 0.3s ease;
+    }
+    .section:hover{
+      background: rgba(255,255,255,.05);
+      border-color: rgba(255,255,255,.15);
+    }
+    .section h4{ margin:0 0 6px; font-size:13px; }
+    .section p{ margin:0; color:var(--muted); font-size:13px; line-height:1.45; white-space:pre-wrap; }
+
+    /* Theme Selector */
+    .theme-selector{
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .theme-toggle{
+      background: var(--chip);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 900;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .theme-toggle:hover{
+      background: var(--chip2);
+      transform: translateY(-1px);
+    }
+    .theme-options{
+      display: none;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .theme-options.active{
+      display: flex;
+      flex-direction: column;
+    }
+    .theme-option{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--chip);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 12px;
+    }
+    .theme-option:hover{
+      background: var(--chip2);
+      transform: translateX(4px);
+    }
+    .theme-option.active{
+      background: var(--electric);
+      border-color: var(--electric);
+      color: white;
+      font-weight: 900;
+    }
+    .theme-dot{
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .theme-dot.dark{ background: linear-gradient(135deg, #0f1419, #1a1f2e); }
+    .theme-dot.light{ background: linear-gradient(135deg, #ffffff, #f0f4ff); }
+    .theme-dot.mint{ background: linear-gradient(135deg, #0c1f1f, #133333); }
+    .theme-dot.sunset{ background: linear-gradient(135deg, #1f0f25, #3a1f47); }
+    .theme-dot.ocean{ background: linear-gradient(135deg, #0d1b2a, #1b263b); }
+    .fixture-expanded{
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+    .fixture-expanded:hover{
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.15);
+    }
+
+    .bet-type-btn{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 11px;
+      text-align: left;
+      color: var(--text);
+    }
+    .bet-type-btn:hover{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,210,90,0.3);
+      transform: translateY(-1px);
+    }
+    .bet-type-btn.active{
+      background: linear-gradient(135deg, rgba(255,210,90,0.25), rgba(255,210,90,0.15));
+      border-color: rgba(255,210,90,0.5);
+      font-weight: 900;
+    }
+    .bet-type-btn.active:hover{
+      background: linear-gradient(135deg, rgba(255,210,90,0.35), rgba(255,210,90,0.25));
+    }
+
+    /* AI Chat Styles */
+    .chat-message{
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      animation: fadeIn 0.3s ease;
+    }
+    .chat-message.user{
+      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.08));
+      border: 1px solid rgba(0,212,255,0.3);
+      margin-left: 20px;
+    }
+    .chat-message.ai{
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.1);
+      margin-right: 20px;
+    }
+    .chat-message .chat-label{
+      font-size: 11px;
+      font-weight: 900;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+    .chat-message .chat-content{
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .quick-question-btn{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 12px;
+      text-align: left;
+    }
+    .quick-question-btn:hover{
+      background: rgba(255,255,255,.08);
+      border-color: var(--electric);
+      transform: translateX(2px);
+    }
+    @keyframes fadeIn{
+      from{ opacity: 0; transform: translateY(10px); }
+      to{ opacity: 1; transform: translateY(0); }
+    }
+    .typing-indicator{
+      display: inline-flex;
+      gap: 4px;
+      padding: 8px;
+    }
+    .typing-dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--electric);
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-dot:nth-child(2){ animation-delay: 0.2s; }
+    .typing-dot:nth-child(3){ animation-delay: 0.4s; }
+    @keyframes typingBounce{
+      0%, 60%, 100%{ transform: translateY(0); }
+      30%{ transform: translateY(-10px); }
+    }
+
+    /* Best Odds Widget */
+    .best-odds-widget{
+      background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.10));
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    .best-odds-header{
+      font-size: 13px;
+      font-weight: 900;
+      color: #ffd700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .odds-row{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      transition: all 0.3s ease;
+    }
+    .odds-row:hover{
+      background: rgba(255,255,255,0.06);
+      transform: translateX(2px);
+    }
+    .odds-label{
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .odds-value{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bookmaker-name{
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--electric);
+    }
+    .odds-number{
+      font-size: 15px;
+      font-weight: 900;
+      color: #ffd700;
+    }
+    .bet-now-btn{
+      background: linear-gradient(135deg, var(--electric), var(--secondary));
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .bet-now-btn:hover{
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,212,255,0.4);
+    }
+    .odds-comparison{
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .custom-fixture-odds{
+      margin-top: 10px;
+    }
+    .saved-acca-odds{
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    
+    /* Custom Acca Display */
+    .custom-acca-card{
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .custom-acca-header{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    }
+    .custom-acca-odds{
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--electric);
+    }
+    .custom-acca-selection{
+      background: rgba(255,255,255,.03);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .custom-acca-selection:hover{
+      background: rgba(255,255,255,.06);
+    }
+    .remove-selection{
+      background: rgba(255, 90, 90, 0.2);
+      border: 1px solid rgba(255, 90, 90, 0.3);
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+    .remove-selection:hover{
+      background: rgba(255, 90, 90, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* content panes */
+    .pane{ display:none; }
+    .pane.active{ display:block; }
+
+    /* Live scores */
+    .live-match{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      margin-bottom:8px;
+    }
+    .live-match.live{
+      background:rgba(255,90,90,.08);
+      border-color:rgba(255,90,90,.3);
+    }
+    .match-teams{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      flex:1;
+    }
+    .team-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .score{
+      font-weight:900;
+      font-size:20px;
+      min-width:30px;
+      text-align:center;
+    }
+    .live-badge{
+      background:rgba(255,90,90,.8);
+      color:white;
+      padding:4px 8px;
+      border-radius:6px;
+      font-size:11px;
+      font-weight:900;
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse{
+      0%, 100%{ opacity:1; }
+      50%{ opacity:0.7; }
+    }
+    .result-match{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid transparent;
+      margin-bottom:8px;
+    }
+    .result-match:hover{
+      background:rgba(255,255,255,.05);
+      border-color:rgba(255,255,255,.10);
+    }
+    .result-score{
+      font-weight:900;
+      font-size:16px;
+      padding:8px 12px;
+      border-radius:10px;
+      background:var(--chip);
+      min-width:60px;
+      text-align:center;
+    }
+    
+    /* H2H specific */
+    .h2h-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      margin-bottom:12px;
+    }
+    .h2h-team{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex:1;
+    }
+    .h2h-team.away{
+      flex-direction:row-reverse;
+      text-align:right;
+    }
+    .h2h-stats{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .stat-box{
+      padding:8px 12px;
+      border-radius:10px;
+      background:var(--chip);
+      font-weight:900;
+      text-align:center;
+      min-width:50px;
+    }
+    .stat-box.win{ background:var(--good); }
+    .stat-box.draw{ background:var(--warn); }
+    .h2h-match{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid transparent;
+      margin-bottom:6px;
+      font-size:13px;
+    }
+    .h2h-date{
+      color:var(--muted);
+      font-size:11px;
+      min-width:80px;
+    }
+    
+    /* P&L Tracker */
+    .pl-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap:10px;
+      margin-bottom:16px;
+    }
+    .pl-stat{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+    }
+    .pl-stat-label{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      margin-bottom:4px;
+    }
+    .pl-stat-value{
+      font-size:20px;
+      font-weight:900;
+    }
+    .pl-stat.positive .pl-stat-value{ color:#46ff8c; }
+    .pl-stat.negative .pl-stat-value{ color:#ff5a5a; }
+    
+    .saved-acca-card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .saved-acca-card.won{ border-color:rgba(70,255,140,.4); background:rgba(70,255,140,.05); }
+    .saved-acca-card.lost{ border-color:rgba(255,90,90,.4); background:rgba(255,90,90,.05); }
+    .saved-acca-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .status-badge{
+      padding:4px 10px;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .status-badge.pending{ background:rgba(255,210,90,.3); color:#ffd25a; }
+    .status-badge.won{ background:rgba(70,255,140,.3); color:#46ff8c; }
+    .status-badge.lost{ background:rgba(255,90,90,.3); color:#ff5a5a; }
+    .acca-actions-row{
+      display:flex;
+      gap:6px;
+      margin-top:8px;
+    }
+    .acca-actions-row button{
+      flex:1;
+      padding:6px 10px;
+      font-size:11px;
+    }
+
+    /* ACCA UI */
+    .acca-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .acca-actions button{ flex:1 1 180px; }
+    .acca-grid{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top:12px; }
+    .acca-card{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      border-radius:14px;
+      padding:10px;
+    }
+    .acca-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .acca-title{ font-weight:900; }
+    .acca-sub{ color:var(--muted); font-size:12px; margin-top:4px; }
+    .star{
+      cursor:pointer;
+      user-select:none;
+      font-size:18px;
+      line-height:18px;
+      padding:6px 8px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+    }
+    .star:hover{ background:rgba(255,255,255,.08); }
+    .star.saved{ background:rgba(255,255,255,.14); }
+    .acca-badges{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .badge{
+      font-size:12px; color:var(--muted);
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      transition: all 0.3s ease;
+    }
+    .badge.good{ 
+      background: linear-gradient(135deg, rgba(70, 255, 140, 0.2), rgba(70, 255, 140, 0.1));
+      border-color: rgba(70, 255, 140, 0.3);
+      color: var(--neon-green);
+    }
+    .badge.bad{ 
+      background: linear-gradient(135deg, rgba(255, 90, 90, 0.2), rgba(255, 90, 90, 0.1));
+      border-color: rgba(255, 90, 90, 0.3);
+      color: #ff5a5a;
+    }
+    .badge.warn{ 
+      background: linear-gradient(135deg, rgba(255, 210, 90, 0.2), rgba(255, 210, 90, 0.1));
+      border-color: rgba(255, 210, 90, 0.3);
+      color: #ffd25a;
+    }
+
+    /* Confidence Indicators */
+    .confidence-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      transition: all 0.3s ease;
+    }
+    .confidence-high{
+      background: linear-gradient(135deg, rgba(70, 255, 140, 0.25), rgba(70, 255, 140, 0.15));
+      border: 1px solid rgba(70, 255, 140, 0.4);
+      color: var(--neon-green);
+    }
+    .confidence-medium{
+      background: linear-gradient(135deg, rgba(255, 210, 90, 0.25), rgba(255, 210, 90, 0.15));
+      border: 1px solid rgba(255, 210, 90, 0.4);
+      color: #ffd25a;
+    }
+    .confidence-low{
+      background: linear-gradient(135deg, rgba(255, 90, 90, 0.25), rgba(255, 90, 90, 0.15));
+      border: 1px solid rgba(255, 90, 90, 0.4);
+      color: #ff5a5a;
+    }
+    .confidence-dots{
+      display: inline-flex;
+      gap: 3px;
+    }
+    .confidence-dot{
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.3;
+    }
+    .confidence-dot.active{
+      opacity: 1;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot{
+      0%, 100%{ transform: scale(1); }
+      50%{ transform: scale(1.2); }
+    }
+
+    .acca-reason{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      white-space:pre-wrap;
+    }
+
+    .saved-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; }
+    .mini-btn{
+      padding:8px 10px; border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      font-weight:800; cursor:pointer;
+    }
+    .mini-btn:hover{ background:rgba(255,255,255,.10); }
+
+    .returns-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){
+      .returns-row{ grid-template-columns:1fr 1fr; }
+    }
+    .returns-row input, .returns-row select{
+      width:100%; box-sizing:border-box; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border); background:rgba(255,255,255,.04); color:var(--text); outline:none;
+    }
+    select{ appearance:auto; }
+    .profit{
+      padding:10px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      font-weight:900;
+      display:flex; align-items:center; justify-content:center;
+      min-height:40px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>⚽ Global Football Intelligence</header>
+
+  <div class="wrap">
+
+    <!-- LEFT: Tabs content -->
+    <div class="card">
+      <div class="tabs">
+        <div class="tab active" data-tab="analyze">🧠 Analyze</div>
+        <div class="tab" data-tab="table">📊 League Table</div>
+        <div class="tab" data-tab="live">🔴 Live & Results</div>
+        <div class="tab" data-tab="h2h">🤝 Head-to-Head</div>
+        <div class="tab" data-tab="ai-chat">💬 Ask AI</div>
+        <div class="tab" data-tab="custom">⭐ Custom Builder</div>
+        <div class="tab" data-tab="acca">🧾 AI Accas</div>
+        <div class="tab" data-tab="fh-acca">⚡ FH Acca</div>
+        <div class="tab" data-tab="my-accas">📈 My Accas</div>
+      </div>
+
+      <!-- ANALYZE PANE -->
+      <div id="pane-analyze" class="pane active">
+        <div class="row">
+          <h2 style="margin:0;">🧠 Match Analysis</h2>
+          <span id="selectedLeague" class="pill">Pick a league</span>
+        </div>
+
+        <div class="muted">Click a fixture (right) or type a match (e.g. Arsenal vs Liverpool) then Analyze.</div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <input id="query" placeholder="Team A vs Team B" />
+          <button id="analyzeBtn">Analyze</button>
+        </div>
+
+        <div id="analysis" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- TABLE PANE -->
+      <div id="pane-table" class="pane">
+        <div class="row">
+          <h2 style="margin:0;">📊 League Table</h2>
+          <span id="selectedLeague2" class="pill">Pick a league</span>
+        </div>
+        <div id="table" class="muted" style="margin-top:10px;">Select a league to load the table.</div>
+      </div>
+
+      <!-- LIVE & RESULTS PANE -->
+      <div id="pane-live" class="pane">
+        <div class="row">
+          <h2 style="margin:0;">🔴 Live & Recent Results</h2>
+          <span id="selectedLeague3" class="pill">Pick a league</span>
+        </div>
+
+        <h3 style="font-size:14px; margin:16px 0 8px;">⚡ Live Matches</h3>
+        <div id="liveMatches" class="muted">Select a league to see live matches.</div>
+
+        <h3 style="font-size:14px; margin:16px 0 8px;">📋 Recent Results (Last 7 Days)</h3>
+        <div id="results" class="muted">Select a league to see recent results.</div>
+      </div>
+
+      <!-- H2H PANE -->
+      <div id="pane-h2h" class="pane">
+        <div class="row">
+          <h2 style="margin:0;">🤝 Head-to-Head</h2>
+          <span id="selectedLeague4" class="pill">Pick a league</span>
+        </div>
+        
+        <div class="muted" style="margin-top:10px;">Enter two teams to see their head-to-head record</div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <input id="h2hQuery" placeholder="Team A vs Team B" />
+          <button id="h2hBtn">Compare</button>
+        </div>
+
+        <div id="h2hOutput" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- AI CHAT PANE -->
+      <div id="pane-ai-chat" class="pane">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h2 style="margin:0;">💬 Ask AI Anything</h2>
+          <div style="background:linear-gradient(135deg, rgba(70,255,140,0.2), rgba(70,255,140,0.1)); border:1px solid rgba(70,255,140,0.4); padding:4px 10px; border-radius:8px; font-size:11px; font-weight:900;">
+            🔴 LIVE DATA
+          </div>
+        </div>
+        
+        <div class="muted" style="margin-bottom:12px;">
+          Chat with AI using <b>real-time league data</b>! Current standings, recent results, and up-to-date form info.
+        </div>
+
+        <!-- Chat History -->
+        <div id="chatHistory" style="max-height:400px; overflow-y:auto; margin-bottom:12px; padding:12px; background:rgba(255,255,255,.02); border-radius:12px; border:1px solid var(--border);"></div>
+
+        <!-- Quick Questions -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:13px; font-weight:900; margin-bottom:8px;">💡 Quick Questions:</div>
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+            <button class="quick-question-btn" onclick="askQuickQuestion('Will they score early?')">
+              ⏱️ Early goals?
+            </button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('Any key injuries?')">
+              ⚕️ Injuries?
+            </button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('Who will win?')">
+              🎯 Who wins?
+            </button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('Value bets today?')">
+              💰 Value bets?
+            </button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('Build me an acca')">
+              🧾 Build acca
+            </button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('Best BTTS picks?')">
+              ⚽⚽ BTTS picks
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input id="aiChatInput" placeholder="Ask me anything about football betting..." 
+                 style="flex:1;" 
+                 onkeypress="if(event.key==='Enter') sendAIMessage()">
+          <button onclick="sendAIMessage()" style="padding:10px 20px;">
+            Send
+          </button>
+          <button onclick="clearChatHistory()" style="padding:10px; background:rgba(255,90,90,0.1); border-color:rgba(255,90,90,0.3);" title="Clear Chat">
+            🗑️
+          </button>
+        </div>
+
+        <div class="muted" style="font-size:11px; margin-bottom:12px; opacity:0.7;">
+          💡 Try: "Which team is in better form?" or "Analyze Liverpool's next match"
+        </div>
+
+        <!-- Screenshot Upload -->
+        <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:12px;">
+          <div style="font-size:13px; font-weight:900; margin-bottom:8px;">📸 Analyze Acca Screenshot</div>
+          <div class="muted" style="font-size:11px; margin-bottom:8px;">
+            Upload a screenshot of an acca from Twitter/friends and AI will analyze it!
+          </div>
+          <input type="file" id="accaScreenshot" accept="image/*" style="display:none;" onchange="handleScreenshotUpload(event)">
+          <button onclick="document.getElementById('accaScreenshot').click()" style="width:100%; background:linear-gradient(135deg, rgba(147,51,234,0.2), rgba(147,51,234,0.1)); border-color:rgba(147,51,234,0.4);">
+            📸 Upload Screenshot
+          </button>
+        </div>
+      </div>
+
+      <!-- CUSTOM BUILDER PANE -->
+      <div id="pane-custom" class="pane">
+        <h2>⭐ Build Your Custom Acca</h2>
+        
+        <div class="muted" style="margin-bottom:12px;">
+          Click ⭐ on fixtures below to add them to your custom acca. Mix your picks with AI suggestions!
+        </div>
+
+        <!-- Custom Acca Display -->
+        <div id="customAccaDisplay" style="display:none;" class="custom-acca-card">
+          <div class="custom-acca-header">
+            <div>
+              <b style="font-size:16px;">YOUR CUSTOM ACCA</b>
+              <div class="muted" style="font-size:11px;" id="customAccaCount">0 selections</div>
+            </div>
+            <div class="custom-acca-odds" id="customAccaTotalOdds">1.00x</div>
+          </div>
+          
+          <div id="customAccaSelections"></div>
+          
+          <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(0,212,255,0.2);">
+            <div style="display:flex; gap:10px; font-size:13px; margin-bottom:10px;">
+              <div style="flex:1;">
+                <div class="muted" style="font-size:11px; margin-bottom:4px;">Stake</div>
+                <input type="number" id="customStake" value="10" min="1" style="width:100%; padding:8px;">
+              </div>
+              <div style="flex:1;">
+                <div class="muted" style="font-size:11px; margin-bottom:4px;">Returns</div>
+                <div id="customReturns" style="padding:8px; background:rgba(70,255,140,0.1); border-radius:8px; font-weight:900; text-align:center;">
+                  £10.00
+                </div>
+              </div>
+            </div>
+            
+            <div style="display:flex; gap:8px;">
+              <button onclick="saveCustomAcca()" style="flex:1; background:linear-gradient(135deg, rgba(70,255,140,0.2), rgba(70,255,140,0.1)); border-color:rgba(70,255,140,0.4);">
+                💾 Save Acca
+              </button>
+              <button onclick="aiCoPilot()" style="flex:1; background:linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,212,255,0.1)); border-color:rgba(0,212,255,0.4);">
+                🤖 AI Co-Pilot
+              </button>
+              <button onclick="clearCustomAcca()" style="flex:1; background:rgba(255,90,90,0.1); border-color:rgba(255,90,90,0.3);">
+                🗑️ Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Fixtures -->
+        <h3 style="font-size:14px; margin-top:20px; margin-bottom:10px;">📅 Upcoming Fixtures (Click ⭐ to add)</h3>
+        <div id="customBuilderFixtures" class="muted">Select a league to see fixtures.</div>
+      </div>
+
+      <!-- ACCA PANE -->
+      <div id="pane-acca" class="pane">
+        <h2>🧾 Acca Builder</h2>
+
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <button onclick="generateAcca('win')">Win Acca</button>
+          <button onclick="generateAcca('goals')">Goals Acca</button>
+          <button onclick="generateAcca('underdog')">Underdog Acca</button>
+        </div>
+
+        <div class="muted">Selected League: <span id="selectedLeagueAcca">None</span></div>
+
+        <div id="accaOutput" class="muted" style="margin-top:12px;">
+          Press a button to generate an acca.
+        </div>
+      </div>
+
+      <!-- FH ACCA PANE -->
+      <div id="pane-fh-acca" class="pane">
+        <h2>⚡ First Half Acca Builder</h2>
+        
+        <div class="muted" style="margin-bottom:12px;">
+          AI-powered analysis of first half performance across all leagues
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+          <button onclick="generateFHAcca('fh-goal')" style="width:100%;">
+            🎯 First Half Goal - Teams likely to score in 1st half
+          </button>
+          <button onclick="generateFHAcca('fh-1.5')" style="width:100%;">
+            ⚽⚽ Over 1.5 FH Goals - High-scoring first halves
+          </button>
+          <button onclick="generateFHAcca('early-goal')" style="width:100%;">
+            ⏱️ Early Goal (0-30 min) - Fast starters
+          </button>
+        </div>
+
+        <div id="fhAccaOutput" class="muted">
+          Click a button above to generate AI-powered first half predictions.
+        </div>
+      </div>
+
+      <!-- MY ACCAS PANE -->
+      <div id="pane-my-accas" class="pane">
+        <h2>📈 My Accas & P&L Tracker</h2>
+        
+        <div id="plSummary" style="margin-bottom:16px;">
+          <div class="muted">Loading your accas...</div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button onclick="loadSavedAccas()" style="flex:1;">
+            🔄 Refresh
+          </button>
+          <button onclick="clearAllAccas()" style="flex:1; background:rgba(255,90,90,.2);">
+            🗑️ Clear All
+          </button>
+        </div>
+
+        <div id="savedAccasList"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: leagues, fixtures -->
+    <div class="card">
+      <h2>🏆 Competitions</h2>
+      <div id="leagues" class="muted">Loading leagues…</div>
+
+      <!-- Toggle between upcoming and results -->
+      <div style="display:flex; gap:8px; margin-top:14px; margin-bottom:8px;">
+        <button id="btnShowUpcoming" class="mini-btn" style="flex:1; background:rgba(255,255,255,.14);">
+          📅 Upcoming
+        </button>
+        <button id="btnShowResults" class="mini-btn" style="flex:1;">
+          📋 Results
+        </button>
+      </div>
+
+      <div id="fixturesContainer">
+        <h3 style="font-size:14px; margin:0 0 8px;">📅 Next 7 days</h3>
+        <div id="fixtures" class="muted">Select a league to load fixtures.</div>
+      </div>
+
+      <div id="resultsContainer" style="display:none;">
+        <h3 style="font-size:14px; margin:0 0 8px;">📋 Last 7 days</h3>
+        <div id="sidebarResults" class="muted">Select a league to see results.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Theme Selector -->
+  <div class="theme-selector">
+    <button class="theme-toggle" onclick="toggleThemeSelector()">
+      🎨 Theme
+    </button>
+    <div class="theme-options" id="themeOptions">
+      <div class="theme-option active" onclick="setTheme('dark')" data-theme="dark">
+        <span class="theme-dot dark"></span>
+        <span>Dark Mode</span>
+      </div>
+      <div class="theme-option" onclick="setTheme('light')" data-theme="light">
+        <span class="theme-dot light"></span>
+        <span>Light Mode</span>
+      </div>
+      <div class="theme-option" onclick="setTheme('mint')" data-theme="mint">
+        <span class="theme-dot mint"></span>
+        <span>Mint Fresh</span>
+      </div>
+      <div class="theme-option" onclick="setTheme('sunset')" data-theme="sunset">
+        <span class="theme-dot sunset"></span>
+        <span>Sunset Glow</span>
+      </div>
+      <div class="theme-option" onclick="setTheme('ocean')" data-theme="ocean">
+        <span class="theme-dot ocean"></span>
+        <span>Ocean Blue</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Theme Switching ----------
+    function toggleThemeSelector() {
+      const options = document.getElementById('themeOptions');
+      options.classList.toggle('active');
+    }
+
+    function setTheme(themeName) {
+      document.body.setAttribute('data-theme', themeName);
+      localStorage.setItem('theme', themeName);
+      
+      // Update active state
+      document.querySelectorAll('.theme-option').forEach(opt => {
+        opt.classList.remove('active');
+        if (opt.getAttribute('data-theme') === themeName) {
+          opt.classList.add('active');
+        }
+      });
+      
+      // Close selector
+      document.getElementById('themeOptions').classList.remove('active');
+    }
+
+    // Load saved theme on page load
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    document.addEventListener('DOMContentLoaded', () => {
+      const opt = document.querySelector(`.theme-option[data-theme="${savedTheme}"]`);
+      if (opt) {
+        document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+      }
+    });
+
+    // ---------- API Setup ----------
+    const API = window.location.origin;
+
+    let selectedCompetition = null;
+    let selectedCompetitionName = null;
+
+    const leaguesEl = document.getElementById("leagues");
+    const fixturesEl = document.getElementById("fixtures");
+    const tableEl = document.getElementById("table");
+    const selectedLeagueEl = document.getElementById("selectedLeague");
+    const selectedLeagueEl2 = document.getElementById("selectedLeague2");
+    const selectedLeagueEl3 = document.getElementById("selectedLeague3");
+    const selectedLeagueEl4 = document.getElementById("selectedLeague4");
+    const selectedLeagueAccaEl = document.getElementById("selectedLeagueAcca");
+    const analysisEl = document.getElementById("analysis");
+    const queryInput = document.getElementById("query");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const accaOutputEl = document.getElementById("accaOutput");
+    const liveMatchesEl = document.getElementById("liveMatches");
+    const resultsEl = document.getElementById("results");
+    const h2hQueryInput = document.getElementById("h2hQuery");
+    const h2hBtn = document.getElementById("h2hBtn");
+    const h2hOutputEl = document.getElementById("h2hOutput");
+    const fhAccaOutputEl = document.getElementById("fhAccaOutput");
+    const sidebarResultsEl = document.getElementById("sidebarResults");
+    const fixturesContainer = document.getElementById("fixturesContainer");
+    const resultsContainer = document.getElementById("resultsContainer");
+    const btnShowUpcoming = document.getElementById("btnShowUpcoming");
+    const btnShowResults = document.getElementById("btnShowResults");
+
+    // Custom Acca Builder
+    let customAcca = [];
+    const customAccaDisplay = document.getElementById("customAccaDisplay");
+    const customAccaSelections = document.getElementById("customAccaSelections");
+    const customAccaTotalOdds = document.getElementById("customAccaTotalOdds");
+    const customAccaCount = document.getElementById("customAccaCount");
+    const customStake = document.getElementById("customStake");
+    const customReturns = document.getElementById("customReturns");
+    const customBuilderFixtures = document.getElementById("customBuilderFixtures");
+
+    // AI Chat
+    const chatHistory = document.getElementById("chatHistory");
+    const aiChatInput = document.getElementById("aiChatInput");
+    let conversationHistory = [];
+
+    // Helper: Get confidence badge HTML
+    function getConfidenceBadge(confidence) {
+      const conf = (confidence || "Medium").toLowerCase();
+      let className = "confidence-medium";
+      let dots = 2;
+      let label = "Medium";
+      
+      if (conf.includes("high")) {
+        className = "confidence-high";
+        dots = 3;
+        label = "High";
+      } else if (conf.includes("low")) {
+        className = "confidence-low";
+        dots = 1;
+        label = "Low";
+      }
+      
+      const dotHTML = Array(3).fill(0).map((_, i) => 
+        `<span class="confidence-dot ${i < dots ? 'active' : ''}"></span>`
+      ).join('');
+      
+      return `<span class="confidence-badge ${className}">
+        <span class="confidence-dots">${dotHTML}</span>
+        ${label}
+      </span>`;
+    }
+
+    // Toggle between upcoming and results in sidebar
+    btnShowUpcoming.addEventListener('click', () => {
+      fixturesContainer.style.display = 'block';
+      resultsContainer.style.display = 'none';
+      btnShowUpcoming.style.background = 'rgba(255,255,255,.14)';
+      btnShowResults.style.background = 'rgba(255,255,255,.06)';
+    });
+
+    btnShowResults.addEventListener('click', () => {
+      fixturesContainer.style.display = 'none';
+      resultsContainer.style.display = 'block';
+      btnShowUpcoming.style.background = 'rgba(255,255,255,.06)';
+      btnShowResults.style.background = 'rgba(255,255,255,.14)';
+      if (selectedCompetition) {
+        loadSidebarResults(selectedCompetition);
+      }
+    });
+
+    // ---------- Tabs ----------
+    function openTab(tabName){
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".pane").forEach(p => p.classList.remove("active"));
+
+      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add("active");
+      document.getElementById(`pane-${tabName}`).classList.add("active");
+    }
+
+    document.querySelectorAll(".tab").forEach(t => {
+      t.addEventListener("click", () => openTab(t.dataset.tab));
+    });
+
+    // ---------- Flag Emoji ----------
+    function flagEmoji(cc) {
+      if (!cc || cc.length !== 2) return "🏳️";
+      const codePoints = [...cc.toUpperCase()].map(c => 127397 + c.charCodeAt());
+      return String.fromCodePoint(...codePoints);
+    }
+
+    // ---------- Leagues ----------
+    async function loadLeagues() {
+      try {
+        const res = await fetch(`${API}/leagues`);
+        const data = await res.json();
+
+        leaguesEl.innerHTML = "";
+
+        data.forEach(l => {
+          const row = document.createElement("div");
+          row.className = "league-row";
+
+          row.innerHTML = `
+            <div class="league-left">
+              <div class="flag">
+                <img src="${l.crest || ''}" 
+                     style="width:24px; height:24px; object-fit:contain;" 
+                     onerror="this.style.display='none'; this.parentElement.textContent='${flagEmoji(l.flag || '')}'">
+              </div>
+              <div class="league-meta">
+                <div class="league-name">${l.name}</div>
+                <div class="league-country">${l.country}</div>
+              </div>
+            </div>
+            <div class="pill">${l.code}</div>
+          `;
+
+          row.onclick = () => {
+            selectedCompetition = l.code;
+            selectedCompetitionName = l.name;
+            selectedLeagueEl.textContent = l.name;
+            selectedLeagueEl2.textContent = l.name;
+            selectedLeagueEl3.textContent = l.name;
+            selectedLeagueEl4.textContent = l.name;
+            selectedLeagueAccaEl.textContent = l.name;
+            loadFixtures(l.code);
+            loadTable(l.code);
+            loadLiveMatches(l.code);
+            loadResults(l.code);
+            
+            // Load sidebar results if that view is active
+            if (resultsContainer.style.display !== 'none') {
+              loadSidebarResults(l.code);
+            }
+            
+            // Load custom builder if on that tab
+            const customTab = document.getElementById('pane-custom');
+            if (customTab && customTab.classList.contains('active')) {
+              loadCustomBuilderFixtures(l.code);
+            }
+          };
+
+          leaguesEl.appendChild(row);
+        });
+      } catch (e) {
+        console.error(e);
+        leaguesEl.innerHTML = "<div class='muted'>Failed to load leagues.</div>";
+      }
+    }
+
+    // ---------- Fixtures ----------
+    async function loadFixtures(code) {
+      fixturesEl.innerHTML = "Loading fixtures…";
+
+      try {
+        const res = await fetch(`${API}/fixtures/${code}`);
+        const days = await res.json();
+
+        fixturesEl.innerHTML = "";
+
+        if (!Array.isArray(days) || days.length === 0) {
+          fixturesEl.innerHTML = "<div class='muted'>No upcoming fixtures.</div>";
+          return;
+        }
+
+        days.forEach(day => {
+          const header = document.createElement("div");
+          header.className = "fixture-date";
+          header.textContent = new Date(day.date).toDateString();
+          fixturesEl.appendChild(header);
+
+          (day.matches || []).forEach(m => {
+            const time = new Date(m.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+            const row = document.createElement("div");
+            row.className = "fixture";
+            row.innerHTML = `
+              <div class="fixture-time">${time}</div>
+              <div class="fixture-teams">
+                <img class="team-badge" src="${m.home_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.home}</span>
+                <span class="vs">vs</span>
+                <img class="team-badge" src="${m.away_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.away}</span>
+              </div>
+            `;
+
+            // click fixture -> fill input + switch to analyze tab
+            row.onclick = () => {
+              queryInput.value = `${m.home} vs ${m.away}`;
+              h2hQueryInput.value = `${m.home} vs ${m.away}`;  // Also fill H2H input
+              openTab("analyze");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            };
+
+            fixturesEl.appendChild(row);
+          });
+        });
+
+      } catch (e) {
+        console.error(e);
+        fixturesEl.innerHTML = "<div class='muted'>Error loading fixtures.</div>";
+      }
+    }
+
+    // ---------- Table ----------
+    async function loadTable(code) {
+      tableEl.innerHTML = "Loading table…";
+
+      try {
+        const res = await fetch(`${API}/standings/${code}`);
+        const rows = await res.json();
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+          tableEl.innerHTML = "<div class='muted'>No table data available for this competition.</div>";
+          return;
+        }
+
+        let html = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Team</th>
+                  <th class="num">P</th>
+                  <th class="num">GD</th>
+                  <th class="num">Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        rows.forEach(r => {
+          html += `
+            <tr>
+              <td class="num">${r.position}</td>
+              <td class="teamcell">
+                <img class="team-badge" src="${r.crest || ""}" onerror="this.style.display='none'">
+                <span>${r.team}</span>
+              </td>
+              <td class="num">${r.played}</td>
+              <td class="num">${r.gd}</td>
+              <td class="num"><b>${r.points}</b></td>
+            </tr>
+          `;
+        });
+
+        html += `
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        tableEl.innerHTML = html;
+
+      } catch (e) {
+        console.error(e);
+        tableEl.innerHTML = "<div class='muted'>Error loading table.</div>";
+      }
+    }
+
+    // ---------- Analyze ----------
+    async function analyze() {
+      const q = queryInput.value.trim();
+      if (!q) return;
+
+      if (!selectedCompetition) {
+        analysisEl.innerHTML = "<div class='muted'>Pick a league first (right side), then analyze.</div>";
+        return;
+      }
+
+      analysisEl.innerHTML = "<div class='muted'>Analyzing with live data…</div>";
+
+      try {
+        const res = await fetch(`${API}/analyze`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: q,
+            competition_code: selectedCompetition
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.analysis) {
+          analysisEl.innerHTML = "<div class='muted'>No analysis returned.</div>";
+          return;
+        }
+
+        const text = data.analysis;
+
+        const sections = [
+          "Overview",
+          "Recent Form",
+          "Key Players & Absences",
+          "Tactical Matchup",
+          "Stats That Matter",
+          "Risk Factors"
+        ];
+
+        analysisEl.innerHTML = "";
+
+        const sectionEmojis = {
+          "Overview": "📋",
+          "Recent Form": "📊",
+          "Key Players & Absences": "⚕️",
+          "Tactical Matchup": "🎯",
+          "Stats That Matter": "📈",
+          "Risk Factors": "⚠️"
+        };
+
+        sections.forEach((title, i) => {
+          const start = text.indexOf(title + ":");
+          if (start === -1) return;
+
+          const end = (i < sections.length - 1)
+            ? text.indexOf(sections[i + 1] + ":", start + 1)
+            : text.length;
+
+          const body = text.slice(start + title.length + 1, end).trim() || "No data available.";
+
+          const div = document.createElement("div");
+          div.className = "section";
+          div.innerHTML = `<h4>${sectionEmojis[title] || "📌"} ${title}</h4><p>${body}</p>`;
+          analysisEl.appendChild(div);
+        });
+
+      } catch (e) {
+        console.error(e);
+        analysisEl.innerHTML = "<div class='muted'>Error running analysis.</div>";
+      }
+    }
+
+    analyzeBtn.addEventListener("click", analyze);
+
+    // ---------- Live Matches ----------
+    async function loadLiveMatches(code) {
+      liveMatchesEl.innerHTML = "<div class='muted'>Checking for live matches...</div>";
+
+      try {
+        const res = await fetch(`${API}/live/${code}`);
+        const matches = await res.json();
+
+        if (!Array.isArray(matches) || matches.length === 0) {
+          liveMatchesEl.innerHTML = "<div class='muted'>No live matches at the moment.</div>";
+          return;
+        }
+
+        liveMatchesEl.innerHTML = "";
+
+        matches.forEach(m => {
+          const div = document.createElement("div");
+          div.className = "live-match live";
+          div.innerHTML = `
+            <div class="match-teams">
+              <div class="team-row">
+                <img class="team-badge" src="${m.home_crest || ""}" onerror="this.style.display='none'">
+                <span style="flex:1;">${m.home}</span>
+                <span class="score">${m.home_goals || 0}</span>
+              </div>
+              <div class="team-row">
+                <img class="team-badge" src="${m.away_crest || ""}" onerror="this.style.display='none'">
+                <span style="flex:1;">${m.away}</span>
+                <span class="score">${m.away_goals || 0}</span>
+              </div>
+            </div>
+            <div class="live-badge">${m.minute ? m.minute + "'" : "LIVE"}</div>
+          `;
+          liveMatchesEl.appendChild(div);
+        });
+
+      } catch (e) {
+        console.error(e);
+        liveMatchesEl.innerHTML = "<div class='muted'>Error loading live matches.</div>";
+      }
+    }
+
+    // ---------- Results ----------
+    async function loadResults(code) {
+      resultsEl.innerHTML = "<div class='muted'>Loading results...</div>";
+
+      try {
+        const res = await fetch(`${API}/results/${code}`);
+        const days = await res.json();
+
+        if (!Array.isArray(days) || days.length === 0) {
+          resultsEl.innerHTML = "<div class='muted'>No recent results found.</div>";
+          return;
+        }
+
+        resultsEl.innerHTML = "";
+
+        days.forEach(day => {
+          const header = document.createElement("div");
+          header.className = "fixture-date";
+          header.textContent = new Date(day.date).toDateString();
+          resultsEl.appendChild(header);
+
+          (day.matches || []).forEach(m => {
+            const div = document.createElement("div");
+            div.className = "result-match";
+            div.style.cursor = "pointer";
+            div.innerHTML = `
+              <div class="fixture-teams" style="flex:1;">
+                <img class="team-badge" src="${m.home_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.home}</span>
+                <span class="vs">vs</span>
+                <img class="team-badge" src="${m.away_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.away}</span>
+              </div>
+              <div class="result-score">${m.home_score} - ${m.away_score}</div>
+            `;
+            
+            // Click to view match details
+            div.onclick = () => showMatchDetails(m.match_id);
+            
+            resultsEl.appendChild(div);
+          });
+        });
+
+      } catch (e) {
+        console.error(e);
+        resultsEl.innerHTML = "<div class='muted'>Error loading results.</div>";
+      }
+    }
+
+    // ---------- Sidebar Results ----------
+    async function loadSidebarResults(code) {
+      sidebarResultsEl.innerHTML = "<div class='muted'>Loading results...</div>";
+
+      try {
+        const res = await fetch(`${API}/results/${code}`);
+        const days = await res.json();
+
+        if (!Array.isArray(days) || days.length === 0) {
+          sidebarResultsEl.innerHTML = "<div class='muted'>No recent results.</div>";
+          return;
+        }
+
+        sidebarResultsEl.innerHTML = "";
+
+        days.forEach(day => {
+          const header = document.createElement("div");
+          header.className = "fixture-date";
+          header.textContent = new Date(day.date).toLocaleDateString();
+          sidebarResultsEl.appendChild(header);
+
+          (day.matches || []).forEach(m => {
+            const row = document.createElement("div");
+            row.className = "fixture";
+            row.style.cursor = "pointer";
+            row.innerHTML = `
+              <div class="result-score" style="width:64px; flex:0 0 auto;">${m.home_score}-${m.away_score}</div>
+              <div class="fixture-teams">
+                <img class="team-badge" src="${m.home_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.home}</span>
+                <span class="vs">vs</span>
+                <img class="team-badge" src="${m.away_crest || ""}" onerror="this.style.display='none'">
+                <span>${m.away}</span>
+              </div>
+            `;
+
+            // Click to view match details
+            row.onclick = () => showMatchDetails(m.match_id);
+
+            sidebarResultsEl.appendChild(row);
+          });
+        });
+
+      } catch (e) {
+        console.error(e);
+        sidebarResultsEl.innerHTML = "<div class='muted'>Error loading results.</div>";
+      }
+    }
+
+    // ---------- Match Details Modal ----------
+    async function showMatchDetails(matchId) {
+      if (!matchId) return;
+
+      // Create modal overlay
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+      `;
+
+      modal.innerHTML = `
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 style="margin:0;">📊 Match Details</h2>
+            <button onclick="this.closest('[style*=fixed]').remove()" style="padding:8px 12px; cursor:pointer;">✕ Close</button>
+          </div>
+          <div class="muted">Loading match details...</div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      // Close on background click
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+      };
+
+      try {
+        const res = await fetch(`${API}/match/${matchId}`);
+        const match = await res.json();
+
+        const content = modal.querySelector('div > div:last-child');
+        
+        let html = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:16px; background:rgba(255,255,255,.03); border-radius:12px;">
+            <div style="text-align:center; flex:1;">
+              <img src="${match.home.crest}" style="width:48px; height:48px; object-fit:contain; margin-bottom:8px;" onerror="this.style.display='none'">
+              <div style="font-weight:900;">${match.home.name}</div>
+            </div>
+            <div style="font-size:32px; font-weight:900; padding:0 20px;">
+              ${match.score.full_time.home || 0} - ${match.score.full_time.away || 0}
+            </div>
+            <div style="text-align:center; flex:1;">
+              <img src="${match.away.crest}" style="width:48px; height:48px; object-fit:contain; margin-bottom:8px;" onerror="this.style.display='none'">
+              <div style="font-weight:900;">${match.away.name}</div>
+            </div>
+          </div>
+
+          <div style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:16px;">
+            HT: ${match.score.half_time.home || 0}-${match.score.half_time.away || 0} | 
+            Referee: ${match.referee} | 
+            ${match.venue || 'Unknown Venue'}
+          </div>
+        `;
+
+        if (match.goals && match.goals.length > 0) {
+          html += `<h3 style="font-size:14px; margin:16px 0 8px;">⚽ Goals</h3>`;
+          match.goals.forEach(goal => {
+            const typeIcon = goal.type === 'PENALTY' ? '⚽(P)' : goal.type === 'OWN_GOAL' ? '⚽(OG)' : '⚽';
+            html += `
+              <div style="padding:8px; background:rgba(255,255,255,.02); border-radius:8px; margin-bottom:4px; font-size:13px;">
+                <b>${goal.minute}'</b> ${typeIcon} ${goal.scorer} ${goal.assist ? `(Assist: ${goal.assist})` : ''} - <i>${goal.team}</i>
+              </div>
+            `;
+          });
+        }
+
+        if (match.bookings && match.bookings.length > 0) {
+          html += `<h3 style="font-size:14px; margin:16px 0 8px;">📋 Cards</h3>`;
+          match.bookings.forEach(booking => {
+            const cardIcon = booking.card === 'YELLOW_CARD' ? '🟨' : '🟥';
+            html += `
+              <div style="padding:8px; background:rgba(255,255,255,.02); border-radius:8px; margin-bottom:4px; font-size:13px;">
+                <b>${booking.minute}'</b> ${cardIcon} ${booking.player} - <i>${booking.team}</i>
+              </div>
+            `;
+          });
+        }
+
+        if (match.home.coach || match.away.coach) {
+          html += `
+            <h3 style="font-size:14px; margin:16px 0 8px;">👔 Coaches</h3>
+            <div style="display:flex; justify-content:space-between; font-size:13px;">
+              <span>${match.home.coach || 'Unknown'}</span>
+              <span>${match.away.coach || 'Unknown'}</span>
+            </div>
+          `;
+        }
+
+        content.innerHTML = html;
+
+      } catch (e) {
+        console.error(e);
+        const content = modal.querySelector('div > div:last-child');
+        content.innerHTML = '<div class="muted">Error loading match details.</div>';
+      }
+    }
+
+    // ---------- Head-to-Head ----------
+    async function loadH2H() {
+      const q = h2hQueryInput.value.trim();
+      if (!q) return;
+
+      if (!selectedCompetition) {
+        h2hOutputEl.innerHTML = "<div class='muted'>Pick a league first (right side).</div>";
+        return;
+      }
+
+      h2hOutputEl.innerHTML = "<div class='muted'>Loading head-to-head data...</div>";
+
+      try {
+        const res = await fetch(`${API}/h2h`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: q,
+            competition_code: selectedCompetition
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.matches || data.matches.length === 0) {
+          h2hOutputEl.innerHTML = "<div class='muted'>No head-to-head matches found.</div>";
+          return;
+        }
+
+        const stats = data.stats || {};
+
+        let html = `
+          <div class="h2h-header">
+            <div class="h2h-team">
+              <img class="team-badge" src="${data.home_crest || ""}" onerror="this.style.display='none'" style="width:24px; height:24px;">
+              <span style="font-weight:900;">${data.home}</span>
+            </div>
+            <div class="h2h-stats">
+              <div class="stat-box win">${stats.home_wins || 0}W</div>
+              <div class="stat-box draw">${stats.draws || 0}D</div>
+              <div class="stat-box win">${stats.away_wins || 0}W</div>
+            </div>
+            <div class="h2h-team away">
+              <img class="team-badge" src="${data.away_crest || ""}" onerror="this.style.display='none'" style="width:24px; height:24px;">
+              <span style="font-weight:900;">${data.away}</span>
+            </div>
+          </div>
+          <div class="muted" style="margin-bottom:10px;">Last ${data.matches.length} meetings</div>
+        `;
+
+        data.matches.forEach(m => {
+          const matchDate = new Date(m.date).toLocaleDateString();
+          html += `
+            <div class="h2h-match">
+              <div class="h2h-date">${matchDate}</div>
+              <div style="flex:1; font-weight:900;">${m.home} ${m.score} ${m.away}</div>
+            </div>
+          `;
+        });
+
+        h2hOutputEl.innerHTML = html;
+
+      } catch (e) {
+        console.error(e);
+        h2hOutputEl.innerHTML = "<div class='muted'>Error loading H2H data. Make sure both teams exist in this league.</div>";
+      }
+    }
+
+    h2hBtn.addEventListener("click", loadH2H);
+
+    // ---------- Acca Generator ----------
+    async function generateAcca(type) {
+      if (!selectedCompetition) {
+        accaOutputEl.innerHTML = "<div class='muted'>⚠️ Please select a league first (from the right panel).</div>";
+        return;
+      }
+
+      accaOutputEl.innerHTML = "<div class='muted'>🤖 AI analyzing matches across all leagues...</div>";
+
+      try {
+        const res = await fetch(`${API}/acca/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: type,
+            competition: selectedCompetition
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.selections || data.selections.length === 0) {
+          accaOutputEl.innerHTML = `<div class='muted'>No suitable ${type} acca found. Try a different league or type.</div>`;
+          return;
+        }
+
+        // Store current acca for saving
+        window.currentAcca = data;
+
+        let typeLabel = type.toUpperCase();
+        let html = `
+          <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:15px;">${typeLabel} ACCA</b>
+            <button onclick="saveCurrentAcca()" style="padding:8px 14px; font-size:12px;">
+              💾 Save Acca
+            </button>
+          </div>
+        `;
+        
+        data.selections.forEach((s, idx) => {
+          html += `
+            <div class="acca-card" style="margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px; gap:10px;">
+                <div style="font-weight:900; flex:1;">${idx + 1}. ${s.pick}</div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  ${getConfidenceBadge(s.confidence)}
+                  <div style="background:var(--good); padding:4px 10px; border-radius:8px; font-weight:900; font-size:13px;">
+                    ${s.odds || "N/A"}
+                  </div>
+                </div>
+              </div>
+              <div class="muted" style="font-size:12px;">${s.match}</div>
+              <div class="muted" style="font-size:12px; margin-top:6px; background:rgba(255,255,255,.05); padding:8px; border-radius:8px; line-height:1.5;">
+                <b>🤖 AI Analysis:</b><br>${s.reason}
+              </div>
+              <div class="muted" style="font-size:11px; margin-top:4px;">League: ${s.league}</div>
+            </div>
+          `;
+        });
+
+        // Add total odds and summary
+        html += `
+          <div class="section" style="margin-top:12px;">
+            <h4>📊 Acca Summary</h4>
+            <p><b>Total Odds:</b> ${data.total_odds || "N/A"}</p>
+            <p><b>Stake £10 Returns:</b> £${(10 * (data.total_odds || 1)).toFixed(2)}</p>
+            <p>${data.ai_summary || ""}</p>
+          </div>
+        `;
+
+        accaOutputEl.innerHTML = html;
+
+      } catch (e) {
+        console.error(e);
+        accaOutputEl.innerHTML = "<div class='muted'>❌ Error generating acca. Please try again.</div>";
+      }
+    }
+
+    // ---------- FH Acca Generator ----------
+    async function generateFHAcca(type) {
+      fhAccaOutputEl.innerHTML = "<div class='muted'>🤖 AI analyzing first half data across all leagues...</div>";
+
+      try {
+        const res = await fetch(`${API}/fh-acca/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: type
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.selections || data.selections.length === 0) {
+          fhAccaOutputEl.innerHTML = `<div class='muted'>No suitable ${type} opportunities found. AI couldn't find strong first half patterns.</div>`;
+          return;
+        }
+
+        // Store current FH acca for saving
+        window.currentFHAcca = data;
+
+        let typeLabel = "";
+        if (type === "fh-goal") typeLabel = "FIRST HALF GOAL";
+        else if (type === "fh-1.5") typeLabel = "OVER 1.5 FH GOALS";
+        else if (type === "early-goal") typeLabel = "EARLY GOAL (0-30 MIN)";
+
+        let html = `
+          <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:15px;">⚡ ${typeLabel} ACCA</b>
+            <button onclick="saveFHAcca()" style="padding:8px 14px; font-size:12px;">
+              💾 Save Acca
+            </button>
+          </div>
+        `;
+        
+        data.selections.forEach((s, idx) => {
+          html += `
+            <div class="acca-card" style="margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px; gap:10px;">
+                <div style="font-weight:900; flex:1;">${idx + 1}. ${s.pick}</div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  ${getConfidenceBadge(s.confidence)}
+                  <div style="background:var(--good); padding:4px 10px; border-radius:8px; font-weight:900; font-size:13px;">
+                    ${s.odds || "2.00"}
+                  </div>
+                </div>
+              </div>
+              <div class="muted" style="font-size:12px; margin-bottom:4px;">${s.match}</div>
+              <div class="muted" style="font-size:12px; margin-top:6px; background:rgba(255,255,255,.05); padding:8px; border-radius:8px; line-height:1.5;">
+                <b>🤖 AI Analysis:</b><br>${s.reason}
+              </div>
+              <div class="muted" style="font-size:11px; margin-top:4px;">League: ${s.league}</div>
+            </div>
+          `;
+        });
+
+        if (data.ai_summary) {
+          // Calculate total odds
+          let totalOdds = 1.0;
+          data.selections.forEach(s => {
+            totalOdds *= (s.odds || 2.0);
+          });
+
+          html += `
+            <div class="section" style="margin-top:12px;">
+              <h4>📊 Overall Analysis</h4>
+              <p><b>Total Odds:</b> ${totalOdds.toFixed(2)}</p>
+              <p><b>Stake £10 Returns:</b> £${(10 * totalOdds).toFixed(2)}</p>
+              <p>${data.ai_summary}</p>
+            </div>
+          `;
+        }
+
+        fhAccaOutputEl.innerHTML = html;
+
+      } catch (e) {
+        console.error(e);
+        fhAccaOutputEl.innerHTML = "<div class='muted'>❌ Error generating FH acca. Please try again.</div>";
+      }
+    }
+
+    // ---------- Save FH Acca ----------
+    async function saveFHAcca() {
+      if (!window.currentFHAcca) {
+        alert("No FH acca to save!");
+        return;
+      }
+
+      const stake = prompt("Enter your stake (£):", "10");
+      if (!stake || isNaN(stake)) return;
+
+      // Calculate total odds
+      let totalOdds = 1.0;
+      window.currentFHAcca.selections.forEach(s => {
+        totalOdds *= (s.odds || 2.0);
+      });
+
+      try {
+        const res = await fetch(`${API}/acca/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            acca_type: `FH-${window.currentFHAcca.type}`,
+            selections: window.currentFHAcca.selections,
+            total_odds: totalOdds,
+            stake: parseFloat(stake),
+            ai_summary: window.currentFHAcca.ai_summary
+          })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(`✅ FH Acca saved! ID: ${data.acca_id}`);
+          openTab("my-accas");
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("❌ Error saving FH acca");
+      }
+    }
+
+    // ---------- Custom Acca Builder ----------
+    function loadCustomBuilderFixtures(code) {
+      customBuilderFixtures.innerHTML = "<div class='muted'>Loading fixtures...</div>";
+
+      fetch(`${API}/fixtures/${code}`)
+        .then(res => res.json())
+        .then(days => {
+          if (!Array.isArray(days) || days.length === 0) {
+            customBuilderFixtures.innerHTML = "<div class='muted'>No upcoming fixtures.</div>";
+            return;
+          }
+
+          customBuilderFixtures.innerHTML = "";
+
+          days.forEach(day => {
+            const header = document.createElement("div");
+            header.className = "fixture-date";
+            header.textContent = new Date(day.date).toDateString();
+            customBuilderFixtures.appendChild(header);
+
+            (day.matches || []).forEach(m => {
+              const div = document.createElement("div");
+              div.className = "fixture-expanded";
+              
+              // Define available bet types
+              const betTypes = [
+                { label: `${m.home} Win`, odds: 1.80, key: 'home' },
+                { label: `Draw`, odds: 3.40, key: 'draw' },
+                { label: `${m.away} Win`, odds: 4.50, key: 'away' },
+                { label: `Over 2.5 Goals`, odds: 1.85, key: 'over2.5' },
+                { label: `Under 2.5 Goals`, odds: 1.95, key: 'under2.5' },
+                { label: `BTTS (Both Teams Score)`, odds: 1.70, key: 'btts' }
+              ];
+              
+              div.innerHTML = `
+                <div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.1);">
+                  <div class="fixture-teams" style="margin-bottom:6px;">
+                    <img class="team-badge" src="${m.home_crest || ""}" onerror="this.style.display='none'">
+                    <span style="font-weight:900;">${m.home}</span>
+                    <span class="vs">vs</span>
+                    <img class="team-badge" src="${m.away_crest || ""}" onerror="this.style.display='none'">
+                    <span style="font-weight:900;">${m.away}</span>
+                  </div>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+                  ${betTypes.map(bt => {
+                    const isInAcca = customAcca.some(s => 
+                      s.match === `${m.home} vs ${m.away}` && s.pick === bt.label
+                    );
+                    return `
+                      <button class="bet-type-btn ${isInAcca ? 'active' : ''}" 
+                              onclick="toggleCustomSelection('${m.home}', '${m.away}', '${bt.label}', ${bt.odds}, event)"
+                              style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; font-size:11px;">
+                        <span>${isInAcca ? '⭐' : '☆'} ${bt.label}</span>
+                        <span style="font-weight:900; opacity:0.7;">${bt.odds}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                <div id="custom-odds-${m.home.replace(/\s/g, '-')}" class="custom-fixture-odds"></div>
+              `;
+              
+              customBuilderFixtures.appendChild(div);
+              
+              // Load best odds for this match
+              const oddsContainer = div.querySelector(`#custom-odds-${m.home.replace(/\s/g, '-')}`);
+              if (oddsContainer) {
+                showBestOdds(m.home, m.away, oddsContainer);
+              }
+            });
+          });
+        })
+        .catch(e => {
+          console.error(e);
+          customBuilderFixtures.innerHTML = "<div class='muted'>Error loading fixtures.</div>";
+        });
+    }
+
+    function toggleCustomSelection(home, away, pick, odds, event) {
+      event.stopPropagation();
+      
+      checkAchievements('custom_builder_used');
+      
+      const selection = {
+        match: `${home} vs ${away}`,
+        pick: pick,
+        odds: odds,
+        home: home,
+        away: away
+      };
+      
+      const index = customAcca.findIndex(s => 
+        s.match === selection.match && s.pick === selection.pick
+      );
+      
+      if (index > -1) {
+        customAcca.splice(index, 1);
+      } else {
+        customAcca.push(selection);
+      }
+      
+      updateCustomAccaDisplay();
+      
+      // Reload fixtures to update star buttons
+      if (selectedCompetition) {
+        loadCustomBuilderFixtures(selectedCompetition);
+      }
+    }
+
+    function updateCustomAccaDisplay() {
+      if (customAcca.length === 0) {
+        customAccaDisplay.style.display = 'none';
+        return;
+      }
+      
+      customAccaDisplay.style.display = 'block';
+      
+      // Update count
+      customAccaCount.textContent = `${customAcca.length} selection${customAcca.length > 1 ? 's' : ''}`;
+      
+      // Calculate total odds
+      let totalOdds = customAcca.reduce((acc, sel) => acc * sel.odds, 1);
+      customAccaTotalOdds.textContent = totalOdds.toFixed(2) + 'x';
+      
+      // Update selections display
+      customAccaSelections.innerHTML = '';
+      customAcca.forEach((sel, idx) => {
+        const div = document.createElement('div');
+        div.className = 'custom-acca-selection';
+        div.innerHTML = `
+          <div style="flex:1;">
+            <div style="font-weight:900; font-size:13px;">${sel.pick}</div>
+            <div class="muted" style="font-size:11px;">${sel.match} @ ${sel.odds}</div>
+          </div>
+          <button class="remove-selection" onclick="removeCustomSelection(${idx})">
+            ✕
+          </button>
+        `;
+        customAccaSelections.appendChild(div);
+      });
+      
+      // Update returns
+      updateCustomReturns();
+    }
+
+    function updateCustomReturns() {
+      const stake = parseFloat(customStake.value) || 10;
+      const totalOdds = customAcca.reduce((acc, sel) => acc * sel.odds, 1);
+      const returns = (stake * totalOdds).toFixed(2);
+      customReturns.textContent = `£${returns}`;
+    }
+
+    // Update returns when stake changes
+    if (customStake) {
+      customStake.addEventListener('input', updateCustomReturns);
+    }
+
+    function removeCustomSelection(index) {
+      customAcca.splice(index, 1);
+      updateCustomAccaDisplay();
+      
+      // Reload fixtures to update star buttons
+      if (selectedCompetition) {
+        loadCustomBuilderFixtures(selectedCompetition);
+      }
+    }
+
+    function clearCustomAcca() {
+      if (!confirm("Clear all selections?")) return;
+      
+      customAcca = [];
+      updateCustomAccaDisplay();
+      
+      // Reload fixtures to update star buttons
+      if (selectedCompetition) {
+        loadCustomBuilderFixtures(selectedCompetition);
+      }
+    }
+
+    async function saveCustomAcca() {
+      if (customAcca.length === 0) {
+        alert("Add some selections first!");
+        return;
+      }
+
+      const stake = parseFloat(customStake.value) || 10;
+      const totalOdds = customAcca.reduce((acc, sel) => acc * sel.odds, 1);
+
+      try {
+        const res = await fetch(`${API}/acca/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            acca_type: "custom",
+            selections: customAcca,
+            total_odds: totalOdds,
+            stake: stake,
+            ai_summary: `Custom acca with ${customAcca.length} selections built by you!`
+          })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(`✅ Custom acca saved! ID: ${data.acca_id}`);
+          checkAchievements('acca_saved');
+          clearCustomAcca();
+          openTab("my-accas");
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("❌ Error saving acca");
+      }
+    }
+
+    // ---------- AI Co-Pilot ----------
+    async function aiCoPilot() {
+      if (customAcca.length === 0) {
+        alert("Add at least 1 selection first! AI will suggest more to complete your acca.");
+        return;
+      }
+
+      const coPilotBtn = event.target;
+      coPilotBtn.disabled = true;
+      coPilotBtn.textContent = "🤖 Thinking...";
+
+      try {
+        // Send current selections to generate compatible picks
+        const res = await fetch(`${API}/acca/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "win", // Default to win acca
+            competition: selectedCompetition
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.selections && data.selections.length > 0) {
+          // Add 2-3 AI suggestions that aren't duplicates
+          let added = 0;
+          for (const suggestion of data.selections) {
+            if (added >= 3) break;
+            
+            const isDupe = customAcca.some(s => s.match === suggestion.match);
+            if (!isDupe) {
+              customAcca.push({
+                match: suggestion.match,
+                pick: suggestion.pick,
+                odds: suggestion.odds || 2.0,
+                home: suggestion.match.split(' vs ')[0],
+                away: suggestion.match.split(' vs ')[1],
+                aiSuggested: true
+              });
+              added++;
+            }
+          }
+
+          if (added > 0) {
+            updateCustomAccaDisplay();
+            alert(`🤖 AI added ${added} compatible picks to your acca!`);
+            checkAchievements('ai_copilot_used');
+          } else {
+            alert("AI couldn't find compatible picks. Try a different league!");
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        alert("❌ AI Co-Pilot error");
+      } finally {
+        coPilotBtn.disabled = false;
+        coPilotBtn.textContent = "🤖 AI Co-Pilot";
+      }
+    }
+
+    // ---------- Achievements System ----------
+    let achievements = JSON.parse(localStorage.getItem('achievements')) || {
+      first_acca: false,
+      acca_saved: false,
+      ai_copilot_used: false,
+      ai_chat_used: false,
+      theme_changed: false,
+      five_accas: false,
+      custom_builder_used: false,
+      screenshot_analyzed: false
+    };
+
+    function checkAchievements(action) {
+      const newAchievements = [];
+      
+      if (action === 'acca_saved' && !achievements.acca_saved) {
+        achievements.acca_saved = true;
+        newAchievements.push({
+          title: "🎯 First Acca",
+          desc: "You saved your first acca!"
+        });
+      }
+      
+      if (action === 'ai_copilot_used' && !achievements.ai_copilot_used) {
+        achievements.ai_copilot_used = true;
+        newAchievements.push({
+          title: "🤖 AI Whisperer",
+          desc: "Used AI Co-Pilot to enhance your acca!"
+        });
+      }
+
+      if (action === 'custom_builder_used' && !achievements.custom_builder_used) {
+        achievements.custom_builder_used = true;
+        newAchievements.push({
+          title: "⭐ Builder Pro",
+          desc: "Used the custom acca builder!"
+        });
+      }
+
+      if (action === 'ai_chat_used' && !achievements.ai_chat_used) {
+        achievements.ai_chat_used = true;
+        newAchievements.push({
+          title: "💬 Conversation Starter",
+          desc: "Asked AI for betting advice!"
+        });
+      }
+      
+      if (action === 'screenshot_analyzed' && !achievements.screenshot_analyzed) {
+        achievements.screenshot_analyzed = true;
+        newAchievements.push({
+          title: "📸 Vision Quest",
+          desc: "Analyzed an acca screenshot with AI!"
+        });
+      }
+      
+      // Save achievements
+      localStorage.setItem('achievements', JSON.stringify(achievements));
+      
+      // Show notification
+      newAchievements.forEach(ach => {
+        showAchievementNotification(ach);
+      });
+    }
+
+    function showAchievementNotification(achievement) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, rgba(255,210,90,0.95), rgba(255,180,90,0.95));
+        color: #1a1a1a;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-weight: 900;
+        font-size: 14px;
+        box-shadow: 0 8px 32px rgba(255,210,90,0.4);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        max-width: 300px;
+      `;
+      notification.innerHTML = `
+        <div style="font-size:16px; margin-bottom:4px;">${achievement.title}</div>
+        <div style="font-size:12px; font-weight:normal; opacity:0.8;">${achievement.desc}</div>
+      `;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 4000);
+    }
+
+    // ---------- AI Chat / Whisperer ----------
+    function addChatMessage(role, content) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${role}`;
+      
+      const label = role === 'user' ? '👤 You' : '🤖 AI';
+      messageDiv.innerHTML = `
+        <div class="chat-label">${label}</div>
+        <div class="chat-content">${content}</div>
+      `;
+      
+      chatHistory.appendChild(messageDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-message ai';
+      typingDiv.id = 'typingIndicator';
+      typingDiv.innerHTML = `
+        <div class="chat-label">🤖 AI</div>
+        <div class="typing-indicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      chatHistory.appendChild(typingDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const indicator = document.getElementById('typingIndicator');
+      if (indicator) indicator.remove();
+    }
+
+    async function sendAIMessage() {
+      const userMessage = aiChatInput.value.trim();
+      if (!userMessage) return;
+
+      // Add user message
+      addChatMessage('user', userMessage);
+      aiChatInput.value = '';
+
+      // Show typing
+      showTypingIndicator();
+
+      // Gather real-time context from our APIs
+      let realtimeContext = "";
+      
+      try {
+        // Get current league table if league is selected
+        if (selectedCompetition) {
+          const tableRes = await fetch(`${API}/standings/${selectedCompetition}`);
+          const tableData = await tableRes.json();
+          
+          if (tableData && tableData.length > 0) {
+            realtimeContext += `\n📊 CURRENT ${selectedCompetitionName.toUpperCase()} STANDINGS (2025-26 Season - as of Feb 8, 2026):\n`;
+            realtimeContext += `═══════════════════════════════════════\n`;
+            tableData.slice(0, 10).forEach(team => {
+              realtimeContext += `${team.position}. ${team.team} - ${team.points} points\n`;
+              realtimeContext += `   Played: ${team.played} | Record: ${team.won}W-${team.drawn}D-${team.lost}L\n`;
+              realtimeContext += `   Goals: ${team.gf} scored, ${team.ga} conceded (GD: ${team.gf - team.ga})\n\n`;
+            });
+          }
+        }
+
+        // Get recent results for form context
+        if (selectedCompetition) {
+          const resultsRes = await fetch(`${API}/results/${selectedCompetition}`);
+          const resultsData = await resultsRes.json();
+          
+          if (resultsData && resultsData.length > 0) {
+            realtimeContext += `\n📋 RECENT RESULTS (Last 7 days - Current Form):\n`;
+            realtimeContext += `═══════════════════════════════════════\n`;
+            if (resultsData[0] && resultsData[0].matches) {
+              resultsData[0].matches.slice(0, 8).forEach(match => {
+                realtimeContext += `${match.home} ${match.home_score}-${match.away_score} ${match.away}\n`;
+              });
+            }
+          }
+        }
+
+        // Get upcoming fixtures
+        if (selectedCompetition) {
+          const fixturesRes = await fetch(`${API}/fixtures/${selectedCompetition}`);
+          const fixturesData = await fixturesRes.json();
+          
+          if (fixturesData && fixturesData.length > 0 && fixturesData[0].matches) {
+            realtimeContext += `\n\n⚽ UPCOMING FIXTURES (Next 7 days):\n`;
+            realtimeContext += `═══════════════════════════════════════\n`;
+            fixturesData[0].matches.slice(0, 8).forEach(match => {
+              realtimeContext += `${match.home} vs ${match.away}\n`;
+            });
+            realtimeContext += `\n`;
+          }
+        }
+
+        // NEW: Get injuries from API-Football
+        if (selectedCompetition) {
+          try {
+            const injuriesRes = await fetch(`${API}/api-football/injuries/${selectedCompetition}`);
+            const injuriesData = await injuriesRes.json();
+            
+            if (injuriesData.success && injuriesData.injuries && Object.keys(injuriesData.injuries).length > 0) {
+              realtimeContext += `\n🏥 CURRENT INJURIES & SUSPENSIONS (API-Football Live Data):\n`;
+              realtimeContext += `═══════════════════════════════════════\n`;
+              
+              for (const [team, players] of Object.entries(injuriesData.injuries)) {
+                if (players.length > 0) {
+                  realtimeContext += `${team}:\n`;
+                  players.forEach(p => {
+                    const status = p.type === 'Missing Fixture' ? '❌ OUT' : '⚠️ DOUBT';
+                    realtimeContext += `  ${status} ${p.player} - ${p.reason}\n`;
+                  });
+                  realtimeContext += '\n';
+                }
+              }
+            }
+          } catch (e) {
+            console.log("Could not fetch injuries:", e);
+          }
+        }
+
+      } catch (e) {
+        console.log("Couldn't fetch real-time context:", e);
+      }
+
+      // Build context with real-time data
+      let context = `CRITICAL INSTRUCTIONS - READ CAREFULLY:
+
+Current Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+Current Season: 2025-26 Football Season
+
+You are an expert football betting AI assistant. You have access to REAL-TIME data for the CURRENT 2025-26 season below.
+
+⚠️ IMPORTANT: Your training data is OUTDATED (from 2024-25 season and earlier). You MUST use ONLY the real-time data provided below for any questions about:
+- Current league standings/positions
+- Recent team form
+- Upcoming fixtures
+- Player availability (infer from recent results)
+- Current season statistics
+
+${realtimeContext ? `
+═══════════════════════════════════════════
+REAL-TIME DATA (2025-26 SEASON - ${new Date().toLocaleDateString()}):
+═══════════════════════════════════════════
+${realtimeContext}
+═══════════════════════════════════════════
+` : `
+⚠️ NOTE: Real-time data is currently loading. If asked about specific current standings, politely say "Please select a league from the right sidebar first, then I can give you current standings and data!"
+`}
+
+`;
+      
+      if (selectedCompetition) {
+        context += `\nThe user is currently viewing ${selectedCompetitionName}. ${realtimeContext ? 'Use the standings and fixtures data above for this league.' : 'Data is loading for this league.'} `;
+      } else {
+        context += `\nNOTE: No league is currently selected. If they ask about standings, tell them to select a league first from the right sidebar. `;
+      }
+      
+      if (customAcca.length > 0) {
+        context += `\nThey have ${customAcca.length} selections in their custom acca: ${customAcca.map(s => s.pick).join(', ')}. `;
+      }
+      
+      context += `\n\nAnswer their question conversationally and helpfully (under 150 words). ${realtimeContext ? 'Use the real-time data provided above.' : 'If they ask about current data, guide them to select a league first.'}`;
+
+      // Debug log
+      console.log('=== AI CONTEXT DEBUG ===');
+      console.log('Selected Competition:', selectedCompetition);
+      console.log('Real-time Context Length:', realtimeContext.length);
+      console.log('Context Preview:', context.substring(0, 500));
+      console.log('========================');
+
+      conversationHistory.push({
+        role: 'user',
+        content: userMessage
+      });
+
+      try {
+        // Call Google Gemini with web search - NO context needed!
+        const res = await fetch(`${API}/ai-chat-gemini`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: userMessage
+            // Gemini searches Google automatically - no context needed!
+          })
+        });
+
+        const data = await res.json();
+        removeTypingIndicator();
+
+        if (data.response) {
+          addChatMessage('ai', data.response);
+          
+          // Show if Gemini used Google Search
+          if (data.used_search) {
+            console.log('🔍 Gemini searched Google for current information!');
+          }
+          
+          conversationHistory.push({
+            role: 'assistant',
+            content: data.response
+          });
+          
+          // Achievement for using AI chat
+          checkAchievements('ai_chat_used');
+        } else {
+          addChatMessage('ai', "I'm having trouble responding right now. Please try again!");
+        }
+
+      } catch (e) {
+        console.error(e);
+        removeTypingIndicator();
+        addChatMessage('ai', "Sorry, I'm having connection issues. Please try again in a moment!");
+      }
+    }
+
+    function askQuickQuestion(question) {
+      aiChatInput.value = question;
+      sendAIMessage();
+    }
+
+    // Clear chat history
+    function clearChatHistory() {
+      if (!confirm("Clear chat history?")) return;
+      
+      conversationHistory = [];
+      chatHistory.innerHTML = '<div class="muted" style="text-align:center; padding:40px 20px;">💬 Chat cleared. Ask me anything!</div>';
+    }
+
+    // ---------- Screenshot Acca Analysis ----------
+    async function handleScreenshotUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file!');
+        return;
+      }
+
+      // Show uploading message
+      addChatMessage('user', '📸 Analyzing screenshot...');
+      showTypingIndicator();
+
+      try {
+        // Convert image to base64
+        const base64 = await fileToBase64(file);
+        
+        // Call backend with image
+        const res = await fetch(`${API}/analyze-screenshot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image: base64,
+            prompt: "Analyze this betting acca screenshot. Extract the teams, bet types, and odds. Then provide your expert analysis on each pick and overall acca quality."
+          })
+        });
+
+        const data = await res.json();
+        removeTypingIndicator();
+
+        if (data.analysis) {
+          addChatMessage('ai', data.analysis);
+          checkAchievements('screenshot_analyzed');
+        } else {
+          addChatMessage('ai', "I couldn't analyze that screenshot. Please make sure it's clear and shows the acca details.");
+        }
+
+      } catch (e) {
+        console.error(e);
+        removeTypingIndicator();
+        addChatMessage('ai', "Error analyzing screenshot. Please try again!");
+      }
+
+      // Reset file input
+      event.target.value = '';
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result.split(',')[1]; // Remove data:image/... prefix
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ---------- Best Odds Widget ----------
+    async function showBestOdds(homeTeam, awayTeam, containerElement) {
+      try {
+        console.log(`=== FETCHING ODDS ===`);
+        console.log(`Home: ${homeTeam}, Away: ${awayTeam}`);
+        
+        containerElement.innerHTML = '<div class="muted" style="text-align:center; padding:12px;">💰 Loading best odds...</div>';
+        
+        const response = await fetch(`${API}/api-football/match-odds/${encodeURIComponent(homeTeam)}/${encodeURIComponent(awayTeam)}`);
+        console.log(`Odds Response Status: ${response.status}`);
+        
+        const data = await response.json();
+        console.log(`Odds Data:`, data);
+        
+        if (!data.success || !data.best_odds) {
+          console.log('No odds data available');
+          containerElement.innerHTML = '<div class="muted" style="text-align:center; padding:8px; font-size:11px;">Odds not available for this match</div>';
+          return;
+        }
+        
+        const bestOdds = data.best_odds;
+        
+        // Only show if we have odds data
+        if (bestOdds.home.odds === 0) {
+          console.log('Best odds are zero - no data');
+          containerElement.innerHTML = '<div class="muted" style="text-align:center; padding:8px; font-size:11px;">Odds not yet available</div>';
+          return;
+        }
+        
+        console.log('Displaying odds widget');
+        
+        const html = `
+          <div class="best-odds-widget">
+            <div class="best-odds-header">
+              💰 BEST ODDS - Save Money!
+            </div>
+            
+            <div class="odds-row">
+              <span class="odds-label">${homeTeam} Win:</span>
+              <div class="odds-value">
+                <span class="bookmaker-name">🥇 ${bestOdds.home.bookmaker}</span>
+                <span class="odds-number">${bestOdds.home.odds.toFixed(2)}</span>
+                <a href="https://bet365.com" target="_blank" class="bet-now-btn">Bet Now →</a>
+              </div>
+            </div>
+            
+            ${bestOdds.draw.odds > 0 ? `
+            <div class="odds-row">
+              <span class="odds-label">Draw:</span>
+              <div class="odds-value">
+                <span class="bookmaker-name">🥇 ${bestOdds.draw.bookmaker}</span>
+                <span class="odds-number">${bestOdds.draw.odds.toFixed(2)}</span>
+                <a href="https://williamhill.com" target="_blank" class="bet-now-btn">Bet Now →</a>
+              </div>
+            </div>
+            ` : ''}
+            
+            <div class="odds-row">
+              <span class="odds-label">${awayTeam} Win:</span>
+              <div class="odds-value">
+                <span class="bookmaker-name">🥇 ${bestOdds.away.bookmaker}</span>
+                <span class="odds-number">${bestOdds.away.odds.toFixed(2)}</span>
+                <a href="https://paddypower.com" target="_blank" class="bet-now-btn">Bet Now →</a>
+              </div>
+            </div>
+            
+            <div class="odds-comparison">
+              💡 Showing best odds from ${Object.keys(data.odds).length || 10}+ bookmakers
+            </div>
+          </div>
+        `;
+        
+        containerElement.innerHTML = html;
+        
+      } catch (e) {
+        console.error('Best Odds Error:', e);
+        containerElement.innerHTML = '<div class="muted" style="text-align:center; padding:8px; font-size:11px;">Could not load odds</div>';
+      }
+    }
+
+    // Helper: Extract team names from match string
+    function getTeamsFromMatch(matchString) {
+      // Format: "Team A vs Team B" or "Team A - Team B"
+      const parts = matchString.split(/\s+vs\s+|\s+-\s+/i);
+      if (parts.length === 2) {
+        return {
+          home: parts[0].trim(),
+          away: parts[1].trim()
+        };
+      }
+      return null;
+    }
+
+    // Load custom builder fixtures when league selected or tab opened
+    document.querySelector('.tab[data-tab="custom"]').addEventListener('click', () => {
+      if (selectedCompetition) {
+        loadCustomBuilderFixtures(selectedCompetition);
+      }
+    });
+
+    // ---------- Save Acca ----------
+    async function saveCurrentAcca() {
+      if (!window.currentAcca) {
+        alert("No acca to save!");
+        return;
+      }
+
+      const stake = prompt("Enter your stake (£):", "10");
+      if (!stake || isNaN(stake)) return;
+
+      try {
+        const res = await fetch(`${API}/acca/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            acca_type: window.currentAcca.type,
+            selections: window.currentAcca.selections,
+            total_odds: window.currentAcca.total_odds,
+            stake: parseFloat(stake),
+            ai_summary: window.currentAcca.ai_summary
+          })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(`✅ Acca saved! ID: ${data.acca_id}`);
+          openTab("my-accas");
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("❌ Error saving acca");
+      }
+    }
+
+    // ---------- Load Saved Accas ----------
+    async function loadSavedAccas() {
+      const plSummary = document.getElementById("plSummary");
+      const savedList = document.getElementById("savedAccasList");
+
+      plSummary.innerHTML = "<div class='muted'>Loading...</div>";
+      savedList.innerHTML = "";
+
+      try {
+        const res = await fetch(`${API}/acca/saved`);
+        const data = await res.json();
+
+        const stats = data.stats;
+        const accas = data.accas;
+
+        // Display P&L Summary
+        const plClass = stats.profit_loss >= 0 ? "positive" : "negative";
+        plSummary.innerHTML = `
+          <div class="pl-grid">
+            <div class="pl-stat">
+              <div class="pl-stat-label">Total Accas</div>
+              <div class="pl-stat-value">${stats.total_accas}</div>
+            </div>
+            <div class="pl-stat">
+              <div class="pl-stat-label">Won</div>
+              <div class="pl-stat-value" style="color:#46ff8c;">${stats.won}</div>
+            </div>
+            <div class="pl-stat">
+              <div class="pl-stat-label">Lost</div>
+              <div class="pl-stat-value" style="color:#ff5a5a;">${stats.lost}</div>
+            </div>
+            <div class="pl-stat">
+              <div class="pl-stat-label">Pending</div>
+              <div class="pl-stat-value">${stats.pending}</div>
+            </div>
+            <div class="pl-stat">
+              <div class="pl-stat-label">Total Staked</div>
+              <div class="pl-stat-value">£${stats.total_staked}</div>
+            </div>
+            <div class="pl-stat">
+              <div class="pl-stat-label">Returned</div>
+              <div class="pl-stat-value">£${stats.total_returned}</div>
+            </div>
+            <div class="pl-stat ${plClass}">
+              <div class="pl-stat-label">P&L</div>
+              <div class="pl-stat-value">£${stats.profit_loss}</div>
+            </div>
+            <div class="pl-stat ${plClass}">
+              <div class="pl-stat-label">ROI</div>
+              <div class="pl-stat-value">${stats.roi}%</div>
+            </div>
+          </div>
+        `;
+
+        // Display Saved Accas
+        if (accas.length === 0) {
+          savedList.innerHTML = "<div class='muted'>No saved accas yet. Generate and save accas to track them here!</div>";
+          return;
+        }
+
+        accas.forEach(acca => {
+          const date = new Date(acca.created_at).toLocaleDateString();
+          const statusClass = acca.result;
+          const legResults = acca.leg_results || acca.selections.map(() => 'pending');
+          
+          let html = `
+            <div class="saved-acca-card ${statusClass}">
+              <div class="saved-acca-header">
+                <div>
+                  <b>${acca.type.toUpperCase()} ACCA</b>
+                  <div class="muted" style="font-size:11px;">${date} • ID: ${acca.id}</div>
+                </div>
+                <div class="status-badge ${statusClass}">${acca.result}</div>
+              </div>
+              
+              <div style="font-size:13px; margin-bottom:6px;">
+                <b>Selections (${acca.selections.length}):</b>
+              </div>
+          `;
+
+          acca.selections.forEach((sel, idx) => {
+            const legStatus = legResults[idx] || 'pending';
+            let legIndicator = '⚪';
+            let legStyle = '';
+            
+            if (legStatus === 'won') {
+              legIndicator = '✅';
+              legStyle = 'color: #46ff8c;';
+            } else if (legStatus === 'lost') {
+              legIndicator = '❌';
+              legStyle = 'color: #ff5a5a;';
+            }
+
+            html += `
+              <div style="margin-bottom:6px; background:rgba(255,255,255,.02); padding:8px; border-radius:8px;">
+                <div class="muted" style="font-size:12px; ${legStyle}">
+                  ${legIndicator} ${idx + 1}. ${sel.pick} @ ${sel.odds} <span style="color:var(--muted);">- ${sel.match}</span>
+                </div>
+            `;
+
+            // Show leg action buttons only if acca is pending and leg is pending
+            if (acca.result === 'pending' && legStatus === 'pending') {
+              html += `
+                <div style="display:flex; gap:4px; margin-top:4px;">
+                  <button onclick="updateLeg('${acca.id}', ${idx}, 'won')" 
+                          style="flex:1; padding:4px 8px; font-size:10px; background:rgba(70,255,140,.2);">
+                    ✅ Won
+                  </button>
+                  <button onclick="updateLeg('${acca.id}', ${idx}, 'lost')" 
+                          style="flex:1; padding:4px 8px; font-size:10px; background:rgba(255,90,90,.2);">
+                    ❌ Lost
+                  </button>
+                </div>
+              `;
+            }
+
+            html += `</div>`;
+          });
+
+          html += `
+            <div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,.1);">
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span>Stake: <b>£${acca.stake}</b></span>
+                <span>Odds: <b>${acca.total_odds}</b></span>
+                <span>Potential: <b>£${acca.potential_return}</b></span>
+              </div>
+            </div>
+          `;
+
+          if (acca.result === "pending") {
+            html += `
+              <div class="acca-actions-row">
+                <button onclick="updateAccaResult('${acca.id}', 'won')" style="background:rgba(70,255,140,.2);">
+                  ✅ All Won
+                </button>
+                <button onclick="updateAccaResult('${acca.id}', 'lost')" style="background:rgba(255,90,90,.2);">
+                  ❌ All Lost
+                </button>
+                <button onclick="deleteAcca('${acca.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="acca-actions-row">
+                <button onclick="deleteAcca('${acca.id}')">
+                  🗑️ Delete
+                </button>
+              </div>
+            `;
+          }
+
+          html += `</div>`;
+          savedList.innerHTML += html;
+        });
+
+      } catch (e) {
+        console.error(e);
+        plSummary.innerHTML = "<div class='muted'>Error loading accas</div>";
+      }
+    }
+
+    // ---------- Update Acca Result ----------
+    async function updateAccaResult(accaId, result) {
+      try {
+        const res = await fetch(`${API}/acca/update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            acca_id: accaId,
+            result: result
+          })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error updating acca");
+      }
+    }
+
+    // ---------- Update Individual Leg ----------
+    async function updateLeg(accaId, legIndex, result) {
+      try {
+        const res = await fetch(`${API}/acca/update-leg`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            acca_id: accaId,
+            leg_index: legIndex,
+            result: result
+          })
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          loadSavedAccas();
+          
+          // Show notification if acca completed
+          if (data.acca_status !== 'pending') {
+            const status = data.acca_status === 'won' ? '🎉 ACCA WON!' : '💔 Acca Lost';
+            alert(status);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error updating leg");
+      }
+    }
+
+    // ---------- Delete Acca ----------
+    async function deleteAcca(accaId) {
+      if (!confirm("Delete this acca?")) return;
+
+      try {
+        const res = await fetch(`${API}/acca/delete/${accaId}`, {
+          method: "DELETE"
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error deleting acca");
+      }
+    }
+
+    // ---------- Clear All Accas ----------
+    async function clearAllAccas() {
+      if (!confirm("Clear ALL saved accas? This cannot be undone!")) return;
+
+      try {
+        const res = await fetch(`${API}/acca/clear-all`, {
+          method: "DELETE"
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          loadSavedAccas();
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error clearing accas");
+      }
+    }
+
+    // Auto-load saved accas when tab is opened
+    document.querySelector('.tab[data-tab="my-accas"]').addEventListener('click', () => {
+      loadSavedAccas();
+    });
+
+    // ---------- Smart Auto-Refresh (Goal Detection) ----------
+    let autoRefreshInterval = null;
+    let lastLiveScores = {};
+
+    async function checkForGoals() {
+      if (!selectedCompetition) return;
+
+      try {
+        const res = await fetch(`${API}/live/${selectedCompetition}`);
+        const matches = await res.json();
+
+        let goalsScored = false;
+
+        matches.forEach(m => {
+          const matchKey = `${m.home}-${m.away}`;
+          const currentScore = `${m.home_goals}-${m.away_goals}`;
+          
+          if (lastLiveScores[matchKey] && lastLiveScores[matchKey] !== currentScore) {
+            // GOAL DETECTED!
+            goalsScored = true;
+            showGoalNotification(m);
+          }
+          
+          lastLiveScores[matchKey] = currentScore;
+        });
+
+        // If goals scored, refresh the view
+        if (goalsScored) {
+          const activeTab = document.querySelector('.pane.active');
+          if (activeTab && activeTab.id === 'pane-live') {
+            loadLiveMatches(selectedCompetition);
+            loadResults(selectedCompetition);
+          }
+        }
+
+      } catch (e) {
+        console.error('Goal check error:', e);
+      }
+    }
+
+    function showGoalNotification(match) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #46ff8c, #2ecc71);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-weight: 900;
+        font-size: 14px;
+        box-shadow: 0 4px 20px rgba(70, 255, 140, 0.4);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      notification.innerHTML = `
+        ⚽ GOAL! ${match.home_goals}-${match.away_goals}<br>
+        <span style="font-size:12px; font-weight:normal;">${match.home} vs ${match.away}</span>
+      `;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    }
+
+    // Start goal checking (every 30 seconds - less aggressive)
+    function startSmartRefresh() {
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
+
+      autoRefreshInterval = setInterval(checkForGoals, 30000); // 30 seconds
+    }
+
+    // Only check for goals when on live tab or when league is selected
+    document.querySelector('.tab[data-tab="live"]').addEventListener('click', () => {
+      if (selectedCompetition) {
+        lastLiveScores = {}; // Reset to detect initial state
+        checkForGoals(); // Immediate check
+        startSmartRefresh();
+      }
+    });
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // ---------- Boot ----------
+    loadLeagues();
+
+  </script>
+</body>
+</html>
